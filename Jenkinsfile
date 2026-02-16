@@ -24,9 +24,9 @@ pipeline {
                 sh '''
                     ARCH=$(uname -m)
                     case "$ARCH" in
-                        x86_64)       NODE_ARCH="x64" ;;
+                        x86_64)        NODE_ARCH="x64" ;;
                         aarch64|arm64) NODE_ARCH="arm64" ;;
-                        *)            echo "Unsupported arch: $ARCH"; exit 1 ;;
+                        *)             echo "Unsupported arch: $ARCH"; exit 1 ;;
                     esac
                     NODE_DIR="node-v20.18.1-linux-${NODE_ARCH}"
                     if [ ! -f "tools/${NODE_DIR}/bin/node" ]; then
@@ -34,9 +34,9 @@ pipeline {
                         curl -fsSL "https://nodejs.org/dist/v20.18.1/${NODE_DIR}.tar.gz" | tar -xz -C tools
                     fi
                     ln -sfn "${NODE_DIR}" tools/node
+                    echo "Node.js installed: $(tools/node/bin/node --version)"
+                    echo "npm installed: $(tools/node/bin/node tools/node/bin/npm --version)"
                 '''
-                sh '${NODEJS_HOME}/bin/node --version'
-                sh '${NODEJS_HOME}/bin/npm --version'
             }
         }
 
@@ -57,7 +57,7 @@ pipeline {
 
         stage('Build & Deploy') {
             steps {
-                withEnv(["PATH=${NODEJS_HOME}/bin:${env.PATH}"]) {
+                withEnv(["PATH+NODEJS=${NODEJS_HOME}/bin"]) {
                     echo '--- Installing dependencies and deploying artifacts to JFrog ---'
                     jf "npm install --build-name=${BUILD_NAME} --build-number=${BUILD_NUMBER}"
                     sh 'npm test'
