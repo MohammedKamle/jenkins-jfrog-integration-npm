@@ -77,11 +77,7 @@ The pipeline runs `npm install`, `npm test`, and `npm publish` via `sh` steps, s
 - **Option A:** Install Node.js (and npm) on the agent(s) that will run this job (e.g. system packages, nvm, or a Docker image with Node).
 - **Option B:** Install the [Node.js Plugin](https://plugins.jenkins.io/nodejs/) in Jenkins, add a Node.js installation (e.g. name `NodeJS-20`), then add `nodejs 'NodeJS-20'` inside the `tools { }` block in the Jenkinsfile next to `jfrog 'jfrog-cli'`.
 
-### 3. JFrog Server ID (npm config)
-
-The Jenkinsfile writes `.jfrog/projects/npm.yaml` with `serverId: jfrog`. If your JFrog Jenkins plugin uses a different server ID, either change that value in the **Configure npm Repos** stage of the Jenkinsfile or set the same ID when configuring the JFrog server in Jenkins.
-
-### 4. Push Code to Git
+### 3. Push Code to Git
 
 Push this project to a Git repository:
 
@@ -134,7 +130,7 @@ The Jenkinsfile defines these stages:
 |-------|-------------|
 | **Checkout** | Checks out the source code from the Git repository |
 | **Verify JFrog Connection** | Runs `jf c show` and `jf rt ping` to verify connectivity |
-| **Configure npm Repos** | Writes `.jfrog/projects/npm.yaml` with resolver repo (`demo-npm-virtual`) and deployer repo (`demo-npm-local`) |
+| **Configure npm Repos** | Runs `jf npmc` to set resolver repo (`demo-npm-virtual`) and deployer repo (`demo-npm-local`) |
 | **Build & Deploy** | Runs `jf npm install` (resolve deps from JFrog), `npm test`, `npm run build`, then `jf npm publish` to deploy the package to Artifactory |
 | **Publish Build Info** | Runs `jf rt bp` — publishes build metadata to Artifactory for traceability |
 

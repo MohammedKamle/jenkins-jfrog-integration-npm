@@ -28,19 +28,7 @@ pipeline {
         stage('Configure npm Repos') {
             steps {
                 echo '--- Configuring npm resolution and deployment repositories ---'
-                sh '''
-                    mkdir -p .jfrog/projects
-                    cat > .jfrog/projects/npm.yaml << EOF
-                    version: 1
-                    type: npm
-                    resolver:
-                        repo: demo-npm
-                        serverId: mkamle86
-                    deployer:
-                        repo: demo-npm-local
-                        serverId: mkamle86
-                    EOF
-                '''
+                jf 'npmc --repo-resolve demo-npm-virtual --repo-deploy demo-npm-local'
             }
         }
 
