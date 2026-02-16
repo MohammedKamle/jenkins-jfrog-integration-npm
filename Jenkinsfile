@@ -8,12 +8,27 @@ pipeline {
     environment {
         BUILD_NAME = "${JOB_NAME}"
         BUILD_NUMBER = "${BUILD_NUMBER}"
+        NODEJS_HOME = "${WORKSPACE}/tools/node-v20.18.1-linux-x64"
     }
 
     stages {
         stage('Checkout') {
             steps {
                 checkout scm
+            }
+        }
+
+        stage('Setup Node.js') {
+            steps {
+                echo '--- Installing Node.js ---'
+                sh '''
+                    if [ ! -f "${NODEJS_HOME}/bin/node" ]; then
+                        mkdir -p tools
+                        curl -fsSL https://nodejs.org/dist/v20.18.1/node-v20.18.1-linux-x64.tar.gz | tar -xz -C tools
+                    fi
+                '''
+                sh '${NODEJS_HOME}/bin/node --version'
+                sh '${NODEJS_HOME}/bin/npm --version'
             }
         }
 
@@ -34,12 +49,14 @@ pipeline {
 
         stage('Build & Deploy') {
             steps {
-                echo '--- Installing dependencies and deploying artifacts to JFrog ---'
-                jf "npm install --build-name=${BUILD_NAME} --build-number=${BUILD_NUMBER}"
-                sh 'npm test'
-                sh 'npm run build'
-                echo '--- Publishing package to Artifactory ---'
-                jf "npm publish --build-name=${BUILD_NAME} --build-number=${BUILD_NUMBER}"
+                withEnv(["PATH=${NODEJS_HOME}/bin:${env.PATH}"]) {
+                    echo '--- Installing dependencies and deploying artifacts to JFrog ---'
+                    jf "npm install --build-name=${BUILD_NAME} --build-number=${BUILD_NUMBER}"
+                    sh 'npm test'
+                    sh 'npm run build'
+                    echo '--- Publishing package to Artifactory ---'
+                    jf "npm publish --build-name=${BUILD_NAME} --build-number=${BUILD_NUMBER}"
+                }
             }
         }
 
