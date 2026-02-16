@@ -51,7 +51,7 @@ pipeline {
         stage('Configure npm Repos') {
             steps {
                 echo '--- Configuring npm resolution and deployment repositories ---'
-                jf 'npmc --repo-resolve demo-npm-virtual --repo-deploy demo-npm-local'
+                jf 'npmc --repo-resolve demo-npm --repo-deploy demo-npm-local'
             }
         }
 
