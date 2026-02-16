@@ -3,7 +3,6 @@ pipeline {
 
     tools {
         jfrog 'jfrog-cli'
-        nodejs 'NodeJS-20'
     }
 
     environment {
@@ -59,7 +58,7 @@ pipeline {
         stage('Publish Build Info') {
             steps {
                 echo '--- Publishing build info to JFrog Artifactory ---'
-                jf 'rt bp ${BUILD_NAME} ${BUILD_NUMBER}'
+                jf "rt bp ${BUILD_NAME} ${BUILD_NUMBER}"
             }
         }
     }

@@ -15,7 +15,7 @@ This project contains:
 - **Jenkins** running (e.g., as a Docker container on localhost)
 - **JFrog Jenkins Plugin** installed and configured with a working server connection
 - **JFrog CLI** configured as a Jenkins Global Tool named `jfrog-cli`
-- **Node.js** configured as a Jenkins Global Tool (e.g., `NodeJS-20`)
+- **Node.js and npm** available on the build agent (on PATH), or the Node.js plugin installed and configured (see below)
 - A **Git** repository to host this project
 
 Your JFrog connection should already be verified — running `jf c show` and `jf rt ping` in a Jenkins pipeline should succeed.
@@ -70,18 +70,12 @@ jf repo create demo-npm-remote --package-type npm --rclass remote --url https://
 jf repo create demo-npm-virtual --package-type npm --rclass virtual --repositories demo-npm-remote demo-npm-local
 ```
 
-### 2. Configure Node.js in Jenkins
+### 2. Ensure Node.js and npm on the build agent
 
-Node.js must be available as a Jenkins Global Tool:
+The pipeline runs `npm install`, `npm test`, and `npm publish` via `sh` steps, so the Jenkins agent must have Node.js (v18+) and npm on its PATH.
 
-1. Go to **Manage Jenkins** > **Tools**
-2. Scroll to **Node.js installations**
-3. Click **Add Node.js**
-4. Set Name: `NodeJS-20`
-5. Check **Install automatically**
-6. Select version (e.g., 20.x) and save
-
-Ensure the tool name matches the value used in the Jenkinsfile (`NodeJS-20`).
+- **Option A:** Install Node.js (and npm) on the agent(s) that will run this job (e.g. system packages, nvm, or a Docker image with Node).
+- **Option B:** Install the [Node.js Plugin](https://plugins.jenkins.io/nodejs/) in Jenkins, add a Node.js installation (e.g. name `NodeJS-20`), then add `nodejs 'NodeJS-20'` inside the `tools { }` block in the Jenkinsfile next to `jfrog 'jfrog-cli'`.
 
 ### 3. JFrog Server ID (npm config)
 
