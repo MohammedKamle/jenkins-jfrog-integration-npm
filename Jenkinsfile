@@ -62,6 +62,8 @@ pipeline {
                     jf "npm install --build-name=${BUILD_NAME} --build-number=${BUILD_NUMBER}"
                     sh 'npm test'
                     sh 'npm run build'
+                    echo '--- Bumping version to 1.0.${BUILD_NUMBER} ---'
+                    sh "npm version 1.0.${BUILD_NUMBER} --no-git-tag-version --allow-same-version"
                     echo '--- Publishing package to Artifactory ---'
                     jf "npm publish --build-name=${BUILD_NAME} --build-number=${BUILD_NUMBER}"
                 }
