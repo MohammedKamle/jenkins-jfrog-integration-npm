@@ -2,7 +2,9 @@ pipeline {
     agent any
 
     tools {
+        
         jfrog 'jfrog-cli'
+        // Note: Ensure that the NodeJS Plugin is installed and configured in Jenkins for this to work.
         nodejs 'NodeJS-20'
     }
 
