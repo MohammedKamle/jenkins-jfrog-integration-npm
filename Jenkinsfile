@@ -34,11 +34,11 @@ pipeline {
                     version: 1
                     type: npm
                     resolver:
-                        repo: demo-npm-virtual
-                        serverId: jfrog
+                        repo: demo-npm
+                        serverId: mkamle86
                     deployer:
                         repo: demo-npm-local
-                        serverId: jfrog
+                        serverId: mkamle86
                     EOF
                 '''
             }
