@@ -1,0 +1,15 @@
+# Dependencies and build
+node_modules/
+
+# npm
+.npm
+npm-debug.log*
+*.tgz
+
+# IDE and OS
+.idea/
+*.iml
+.vscode/
+.settings/
+.DS_Store
+Thumbs.db
